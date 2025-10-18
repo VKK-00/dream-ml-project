@@ -1,0 +1,45 @@
+seed: 42
+io:
+  data_dir: data
+  artifacts_dir: artifacts
+files:
+  extraction: ["Extraction.xlsx", "*Extraction*.xlsx"]
+  completeness: ["Project completeness.xlsx", "*Project*completeness*.xlsx"]
+  digital: ["Digital index.xlsx", "*Digital*index*.xlsx"]
+  iri: ["Codificated IRI + Transparency.xlsx", "*Codificated*IRI*Transparency*.xlsx"]
+ml:
+  test_size: 0.20
+  cv_n_splits: 5
+  cv_n_repeats: 2
+  calibrate: true
+  calibration: sigmoid
+  rare_min_freq: 30
+features:
+  target_col: "Project status"
+  target_mapping: {"complete": 1, "unsuccessful": 0}
+  region_cols: {"digital": "Region Name", "iri": "Oblast"}
+  canonical_region: "Region"
+  numeric:
+    - "Forseen duration, months"
+    - "Overall estimated budget, ₴"
+    - "Committed funding, ₴"
+    - "Contract value, ₴"
+    - "Number of objects"
+    - "Number of contracting processes"
+    - "Number of contracts"
+    - "Number of investment objects requiring design documents"
+    - "Financial_Efficiency"
+    - "Financial coverage"
+    - "City Outlook"
+    - "Municipal Services Quality Index"
+    - "City Council Approval"
+    - "Entrepreneurial Opportunities"
+    - "Institutional Capacity"
+    - "Internet Development"
+    - "Administrative Services Center (ASC) Development"
+    - "Paperless Services"
+    - "Digital Education"
+    - "Openness"
+    - "E-Services"
+    - "Sectoral Digital Transformation"
+    - "Digital Index"

@@ -1,0 +1,15 @@
+# Core
+numpy>=1.25
+pandas>=2.2
+scikit-learn==1.7.2
+matplotlib>=3.8
+
+# Excel IO
+openpyxl>=3.1
+
+# Optional but used if available
+imbalanced-learn>=0.12
+xgboost>=2.0
+
+jupyterlab>=4.0
+requests>=2.32
