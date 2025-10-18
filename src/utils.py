@@ -712,6 +712,7 @@ def permutation_importance_df(
         warnings.warn(
             f"Feature name count ({len(feature_names)}) != importances ({n_imp}); aligning by min length.",
             RuntimeWarning,
+            stacklevel=2,
         )
         m = min(n_imp, len(feature_names))
         feat = feature_names[:m]
