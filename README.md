@@ -55,19 +55,19 @@ This repository contains a leakage-aware, interview-ready ML pipeline to analyse
 
 The notebook expects **four inputs** in `./data/`:
 
-1. **`Extraction.xlsx`** — project catalogue  
-   Source (DREAM archive):  
-   `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/projectDetails`
+1. **`Extraction.xlsx`** — project catalogue
+ Source (DREAM archive):
+ `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/projectDetails`
 
-2. **`Project completeness.xlsx`** — project data availability  
-   Source (DREAM archive):  
-   `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/dataAvailability`
+2. **`Project completeness.xlsx`** — project data availability
+ Source (DREAM archive):
+ `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/dataAvailability`
 
-3. **`Digital index.xlsx`** — regional digitalization index  
-   _(Normalize “Region Name” → `Region`.)_
+3. **`Digital index.xlsx`** — regional digitalization index
+ _(Normalize “Region Name” → `Region`.)_
 
-4. **`Codificated IRI + Transparency.xlsx`** — IRI/Transparency  
-   _(Normalize “Oblast” → `Region`.)_
+4. **`Codificated IRI + Transparency.xlsx`** — IRI/Transparency
+ _(Normalize “Oblast” → `Region`.)_
 
 > ⚠️ **Do not commit raw production data** unless governance permits it. Keep file names consistent, or adjust file patterns in the notebook/config.
 
