@@ -8,7 +8,7 @@ This repository contains a reproducible ML pipeline to analyse restoration proje
 ## Contents
 
 - **Notebook:** `notebooks/code.ipynb` — exploratory work and a full runnable workflow.
-- **Library code:** `src/utils.py` — helpers for EDA, preprocessing, models, CV, diagnostics, importance, cleaning/merging, and artifact saving.
+- **Library code:** `src/utils.py` — helpers for EDA, preprocessing, models, CV, diagnostics, importance, cleaning/merging, and artefact saving.
 - **Script:** `scripts/train.py` — trains models end-to-end and writes artifacts.
 - **Tests:** `tests/` — unit tests for critical utilities.
 - **Config:** `config/config.yaml` — feature lists and training knobs.
@@ -18,19 +18,19 @@ This repository contains a reproducible ML pipeline to analyse restoration proje
 
 ## Data sources (Excel inputs)
 
-Place Excel files in the project root or in `./data/` (preferred). The notebook/script expect four inputs:
+Place Excel files in the project root or in `./data/` (preferred). The notebook/script expects four inputs:
 
-1) **Extraction.xlsx** — project catalogue  
-   Source: `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/projectDetails`
+1) **Extraction.xlsx** — project catalogue 
+ Source: `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/projectDetails`
 
-2) **Project completeness.xlsx** — project data availability  
-   Source: `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/dataAvailability`
+2) **Project completeness.xlsx** — project data availability
+ Source: `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/dataAvailability`
 
-3) **Digital index.xlsx** — regional digitalization index  
-   _(Normalize column **“Region Name”** to **`Region`** before merging.)_
+3) **Digital index.xlsx** — regional digitalization index
+ _(Normalize column **“Region Name”** to **`Region`** before merging.)_
 
-4) **Codificated IRI + Transparency.xlsx** — institutional capacity / transparency  
-   _(Normalize column **“Oblast”** to **`Region`** before merging.)_
+4) **Codificated IRI + Transparency.xlsx** — institutional capacity / transparency
+ _(Normalize column **“Oblast”** to **`Region`** before merging.)_
 
 > ⚠️ **Do not commit production data.** Keep filenames consistent or adjust patterns in config/notebook.
 
@@ -56,16 +56,16 @@ pip install -r requirements.txt
 ```bash
 jupyter lab  # or: jupyter notebook
 ```
-Open `notebooks/code.ipynb` and run cells top-to-bottom. Artifacts will be saved into `./artifacts/` (model, metrics, feature importances, model card).
+Open `notebooks/code.ipynb` and run cells top-to-bottom. Artefacts will be saved in `./artifacts/` (model, metrics, feature importances, model card).
 
 ### 4) Or run the training script
 ```bash
 python scripts/train.py
 ```
 Outputs (in `./artifacts/`):
-- `ua_projects_best_<MODEL>_<TS>.joblib` — trained pipeline  
-- `metrics.json` — holdout metrics  
-- `feature_importance_top25.csv` — top permutation importances  
+- `ua_projects_best_<MODEL>_<TS>.joblib` — trained pipeline 
+- `metrics.json` — holdout metrics 
+- `feature_importance_top25.csv` — top permutation importances 
 - `model_card.md` — short model card
 
 ## Configuration
@@ -75,7 +75,7 @@ Edit **`config/config.yaml`** to manage:
 - CV settings, calibration, SMOTE, random seeds,
 - region column mapping for Digital Index and IRI.
 
-The code also provides a **strict** cleaner that avoids mode imputation on raw tables; imputation happens safely inside the scikit-learn pipeline when building the modeling matrix.
+The code also provides a **strict** cleaner that avoids mode imputation on raw tables; imputation happens safely inside the scikit-learn pipeline when building the modelling matrix.
 
 ## What’s inside the pipeline
 - **Preprocessing:** median imputation for numeric; rare-category grouping + one-hot for categorical; standard scaling for numeric.
@@ -139,7 +139,7 @@ Mount the repo so your `data/` and `artifacts/` are visible inside the container
 ```
 
 ## License & Data Use
-Code is released under the MIT License (`LICENSE`).  
+Code is released under the MIT License (`LICENSE`). 
 Data originates from the **DREAM** platform; comply with any relevant terms and governance requirements.
 
 ## Acknowledgments
