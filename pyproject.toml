@@ -6,6 +6,7 @@ extend-exclude = ["data/", "artifacts/", ".venv/"]
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
 ignore = ["E203", "E501"]
+per-file-ignores = { "notebooks/code.ipynb" = ["E402","E702"] }
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403"]
