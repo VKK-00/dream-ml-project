@@ -1,20 +1,14 @@
-# --- Ruff ---
 [tool.ruff]
 target-version = "py311"
-line-length = 100
-extend-exclude = ["data", "artifacts", ".venv"]
+line-length = 120
+extend-exclude = ["data", "artifacts", ".venv", "notebooks/*.ipynb"]
 
 [tool.ruff.lint]
-# Choose the rule sets you want:
 select = ["E", "F", "B", "I"]
 ignore = []
 
-# Ignore noisy rules on the notebook file specifically
-per-file-ignores = { "notebooks/code.ipynb" = ["E402", "E702", "F821"] }
-
-# --- Black ---
 [tool.black]
-line-length = 100
+line-length = 120
 target-version = ["py311"]
 include = '\.pyi?$|\.ipynb$'
 skip-string-normalization = false
