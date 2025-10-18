@@ -21,5 +21,6 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
       - id: check-yaml
       - id: check-toml
