@@ -3,19 +3,19 @@
 [![CI](https://github.com/VKK-00/dream-ml-project/actions/workflows/ci.yml/badge.svg)](../../actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-This repository contains a leakage-aware, interview-ready ML pipeline to analyse restoration projects for war-damaged assets in Ukraine using data from the DREAM platform. The code is reusable and scales as the number of projects grows year over year. As more data arrives, retraining and recalibration typically improve accuracy and reveal subtler relationships.
+This repository contains a reproducible, leakage-aware ML pipeline to analyse restoration projects for war-damaged assets in Ukraine using data from the **DREAM** platform. The code is reusable and scales as the number of projects grows year over year. As more data arrives, retraining and recalibration typically improve accuracy and reveal subtler relationships.
 
 ---
 
 ## Highlights
 
-- **Leakage-aware preprocessing**: median imputation for numerics; rare-category grouping → One-Hot; no mode imputation for categoricals in model features.
-- **Robust evaluation**: repeated CV (PR-AUC primary), **calibrated probabilities** (Platt/sigmoid).
+- **Leakage-aware preprocessing**: numeric median imputation; rare-category grouping → one-hot; **no mode imputation** on raw categoricals (strict cleaner).
+- **Robust evaluation**: repeated CV (PR-AUC primary), **calibrated probabilities** (sigmoid or isotonic).
 - **Structured EDA**: numeric summaries, cardinality, missingness, boxplots, target-by-group scans.
-- **Diagnostics**: residual checks (probabilistic), fairness slices (min-support guards).
-- **Explainability**: permutation importance aggregated across seeds.
+- **Diagnostics**: residual checks, fairness slices (min-support guards).
+- **Explainability**: permutation importance.
 - **Sanity checks**: adversarial train↔test drift AUC.
-- **Reproducible artefacts**: model `.joblib`, metrics, importances, model card → `./artifacts`.
+- **Reproducible artifacts**: model (`.joblib`), metrics, importances, model card → `./artifacts`.
 
 ---
 
@@ -23,53 +23,48 @@ This repository contains a leakage-aware, interview-ready ML pipeline to analyse
 
 ```
 .
-├─ .github/workflows/
-│  └─ ci.yml                     # CI for linting, tests
-├─ config/
-│  └─ config.yaml                # central config (paths, ML options)
-├─ data/
-│  ├─ README.md                  # what to put in /data
-│  └─ sample_minimal.xlsx        # tiny toy dataset (sheets: extraction, completeness, digital, iri)
-├─ notebooks/
-│  └─ code.ipynb                 # main analysis & training notebook
-├─ scripts/
-│  └─ train.py                   # scriptable training entrypoint
+├─ .github/workflows/ci.yml           # CI: pre-commit + pytest
+├─ config/config.yaml                 # model/data config (paths, features, CV, etc.)
+├─ data/                              # place real Excel files here (gitignored)
+├─ sample_minimal.xlsx                # tiny demo file
+├─ notebooks/code.ipynb               # E2E demo notebook
+├─ scripts/train.py                   # training + CV + artifacts
 ├─ src/
 │  ├─ __init__.py
-│  └─ utils.py                   # helpers (EDA, CV, residuals, drift, save_artifacts, etc.)
+│  └─ utils.py                        # cleaning, preprocessing, CV, metrics, importances, saving
 ├─ tests/
-│  └─ test_utils_basic.py        # minimal unit tests
-├─ .editorconfig
-├─ .gitignore
-├─ .pre-commit-config.yaml
-├─ Dockerfile
+│  ├─ conftest.py
+│  └─ test_utils_basic.py             # smoke tests for utils
+├─ .pre-commit-config.yaml            # ruff, black, nbstripout, whitespace hooks
+├─ Dockerfile                         # optional container build
+├─ Makefile                           # optional helpers
+├─ pyproject.toml                     # ruff/black config
+├─ requirements.txt                   # runtime deps
 ├─ LICENSE
-├─ Makefile
-├─ README.md
-└─ requirements.txt
+└─ README.md
 ```
 
 ---
 
 ## Data sources (Excel inputs)
 
-The notebook expects **four inputs** in `./data/`:
+Place **four** inputs in `./data/`:
 
-1. **`Extraction.xlsx`** — project catalogue
- Source (DREAM archive):
+1. **`Extraction.xlsx`** — project catalogue  
+ Source (DREAM archive):  
  `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/projectDetails`
 
-2. **`Project completeness.xlsx`** — project data availability
- Source (DREAM archive):
+2. **`Project completeness.xlsx`** — project data availability  
+ Source (DREAM archive):  
  `https://bi.dream.gov.ua/archive/?qlikTicket=gt_P.thZLa6PNqQ7&qlikTicket=e1oo25HlYN_JKtAg#/dataAvailability`
 
-3. **`Digital index.xlsx`** — regional digitalization index
- _(Normalize “Region Name” → `Region`.)_
+3. **`Digital index.xlsx`** — regional digitalization index  
+ _(Normalize column **“Region Name”** to **`Region`** before merging.)_
 
-4. **`Codificated IRI + Transparency.xlsx`** — IRI/Transparency
- _(Normalize “Oblast” → `Region`.)_
+4. **`Codificated IRI + Transparency.xlsx`** — institutional capacity / transparency  
+ _(Normalize column **“Oblast”** to **`Region`** before merging.)_
 
-> ⚠️ **Do not commit raw production data** unless governance permits it. Keep file names consistent, or adjust file patterns in the notebook/config.
+> ⚠️ **Do not commit raw production data.** Keep filenames consistent or adjust patterns in config/notebook.
 
 ---
 
@@ -78,60 +73,84 @@ The notebook expects **four inputs** in `./data/`:
 ```bash
 # 1) Create & activate a venv
 python -m venv .venv
-# Windows:
+# Windows
 . .venv/Scripts/activate
-# macOS/Linux:
+# macOS/Linux
 # source .venv/bin/activate
 
 # 2) Install dependencies
+python -m pip install -U pip
 pip install -r requirements.txt
-
-# 3) (Option A) Run via notebook
-jupyter lab  # or: jupyter notebook
-# open notebooks/code.ipynb and Run All
-
-# 3) (Option B) Run via script
-python scripts/train.py --config config/config.yaml
 ```
 
-Place your Excel files into `./data/`. After a successful run, find artifacts in `./artifacts/`:
+### Option A — Notebook
 
+```bash
+jupyter lab   # or: jupyter notebook
+```
+Open `notebooks/code.ipynb` and run all cells. Artifacts will appear in `./artifacts/`:
 - `ua_projects_best_<MODEL>_<TS>.joblib`
 - `metrics.json`
 - `feature_importance_top25.csv`
 - `model_card.md`
 
+### Option B — Script
+
+```bash
+python scripts/train.py --config config/config.yaml
+```
+
 ---
 
 ## Configuration
 
-Centralised in:
-- `config/config.yaml` (scripted runs), and/or
-- the `cfg` block at the top of `notebooks/code.ipynb`.
+- Centralized in `config/config.yaml` (scripted runs) and the `cfg` block in the notebook.
+- Defaults:
+  - CV: **5 splits × 2 repeats**
+  - Calibration: **sigmoid**
+  - Rare-category min freq: **30**
+  - Test size: **20%**
 
-Defaults:
-- CV: **5 splits × 2 repeats**
-- Calibration: **sigmoid**
-- Rare-category min freq: **30**
-- Test size: **20%**
+The strict cleaner avoids mode-imputing object columns in the raw table; imputation happens in the scikit-learn pipeline when building features.
 
 ---
 
-## Why this scales well
+## Development
 
-- **PR-AUC focus** helps with imbalanced labels; **ROC-AUC** as secondary.
-- **Calibration** keeps probabilities meaningful as the dataset evolves.
-- **Rare-category grouping** contains exploding cardinality as new entities appear.
-- **Permutation importance (multi-seed)** reduces variance on small test sets.
-- **Fairness and drift checks** remain valid and more stable with more data.
+### Pre-commit (lint/format/notebooks)
 
-As DREAM accumulates more projects annually, retraining + recalibration can improve accuracy and reveal finer-grained patterns.
+This repo uses **ruff**, **black**, **nbstripout**, EOF and whitespace fixers.
+
+```bash
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
+### Tests
+
+```bash
+pytest -q
+```
+
+If `pytest` is missing in CI, add it to your workflow or a `requirements-dev.txt` and install there.
+
+---
+
+## Docker
+
+```bash
+docker build -t dream-ml .
+docker run --rm -v "$PWD:/app" dream-ml python scripts/train.py
+```
+
+Mount the repo so your `data/` and `artifacts/` are visible inside the container.
 
 ---
 
 ## Ethics & responsible use
 
-This code supports Ukraine’s reconstruction analysis. Predictions should be paired with governance: input validation, fairness review, calibration checks, and human oversight.
+This code supports Ukraine’s reconstruction analysis. Use predictions with care and in concert with governance: input validation, fairness review, calibration checks, and human oversight.
 
 ---
 
